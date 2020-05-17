@@ -5,7 +5,7 @@ if (!process.client || !"fetch" in window) {
 import {
   AuthenticationDetails,
   CognitoUserPool,
-  CognitoUser
+  CognitoUser,
 } from "amazon-cognito-identity-js";
 import { UniversalStorageWrapper } from "@sirdiego/nuxt-auth-cognito-scheme/UniversalStorageWrapper";
 
@@ -19,7 +19,7 @@ export default class CognitoAuthScheme {
     this.$pool = new CognitoUserPool({
       UserPoolId: this.options.userPoolId,
       ClientId: this.options.clientId,
-      Storage: this.$storage
+      Storage: this.$storage,
     });
   }
 
@@ -149,7 +149,7 @@ export default class CognitoAuthScheme {
     if (process.client) {
       const interval = this.$auth.$storage.getState("interval");
       if (interval) {
-        clearInterval(this.interval);
+        clearInterval(interval);
         this.$auth.$storage.removeState("interval");
       }
     }
@@ -164,17 +164,17 @@ export default class CognitoAuthScheme {
     return new Promise((resolve, reject) => {
       const authenticationDetails = new AuthenticationDetails({
         Username,
-        Password
+        Password,
       });
       const cognitoUser = new CognitoUser({
         Username,
         Pool: this.$pool,
-        Storage: this.$storage
+        Storage: this.$storage,
       });
 
       cognitoUser.authenticateUser(authenticationDetails, {
-        onSuccess: result => resolve(result),
-        onFailure: error => reject(error)
+        onSuccess: (result) => resolve(result),
+        onFailure: (error) => reject(error),
       });
     });
   }
@@ -188,5 +188,5 @@ const DEFAULTS = {
   userPoolId: undefined,
   clientId: undefined,
   refreshInterval: 5 * 60 * 1000,
-  fetchUserCallback: false
+  fetchUserCallback: false,
 };
