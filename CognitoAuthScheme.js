@@ -15,7 +15,7 @@ export default class CognitoAuthScheme {
     this.name = options._name;
     this.options = Object.assign({}, DEFAULTS, options);
 
-    this.$storage = new UniversalStorageWrapper(this.$auth.$storage);
+    this.$storage = new UniversalStorageWrapper(this.$auth.$storage, this.options.clientId);
     this.$pool = new CognitoUserPool({
       UserPoolId: this.options.userPoolId,
       ClientId: this.options.clientId,
@@ -85,6 +85,8 @@ export default class CognitoAuthScheme {
     if (this.options.autoFetchUser) {
       await this.fetchUser();
     }
+
+    return result;
   }
 
   async setUserToken(tokenValue) {

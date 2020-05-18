@@ -1,7 +1,7 @@
 export class UniversalStorageWrapper /* implements ICognitoStorage */ {
-  constructor(storage, poolId) {
+  constructor(storage, clientId) {
     this.storage = storage;
-    this.poolId = poolId;
+    this.clientId = clientId;
   }
 
   setItem(key /* : string */, value /* : string */) /* : void */ {
@@ -14,7 +14,7 @@ export class UniversalStorageWrapper /* implements ICognitoStorage */ {
     this.storage.removeUniversal(key);
   }
   clear() /* : void */ {
-    let prefix = `auth.CognitoIdentityServiceProvider.${this.poolId}.`;
+    let prefix = `auth.CognitoIdentityServiceProvider.${this.clientId}.`;
     const lastAuthUser = this.getItem(prefix + "LastAuthUser");
     if (!lastAuthUser) {
       return;
