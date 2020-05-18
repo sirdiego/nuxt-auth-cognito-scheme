@@ -28,6 +28,7 @@ Edit `nuxt.config.js`:
       cognito: {
         tokenType: "Bearer",
         globalToken: true,
+        tokenRequired: true,
         tokenName: "Authorization",
         autoFetchUser: true,
         userPoolId: process.env.AWS_COGNITO_USER_POOL_ID,

@@ -183,6 +183,7 @@ export default class CognitoAuthScheme {
 const DEFAULTS = {
   tokenType: "Bearer",
   globalToken: true,
+  tokenRequired: true,
   tokenName: "Authorization",
   autoFetchUser: true,
   userPoolId: undefined,
