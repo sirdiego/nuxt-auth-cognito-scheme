@@ -55,20 +55,23 @@ export default class CognitoAuthScheme {
       this._setToken(token);
     }
 
+    return this.$auth.fetchUserOnce();
+  }
+
+  _scheduleRefresh() {
     if (
       this.options.refreshInterval &&
       process.client &&
-      !this.$auth.$storage.getState("interval")
+      !this.$auth.$storage.getState("interval") &&
+      this.$auth.$state.user
     ) {
       this.$auth.$storage.setState(
         "interval",
         setInterval(() => {
-          this.$auth.fetchUser();
+          this.$auth.fetchUser(true);
         }, this.options.refreshInterval)
       );
     }
-
-    return this.$auth.fetchUserOnce();
   }
 
   async login({ data }) {
@@ -98,14 +101,14 @@ export default class CognitoAuthScheme {
     return this.fetchUser();
   }
 
-  async fetchUser() {
+  async fetchUser(forceRefresh) {
     const cognitoUser = this.$pool.getCurrentUser();
     if (cognitoUser === null) {
       return;
     }
 
     const user = await new Promise((resolve, reject) => {
-      cognitoUser.getSession((err, cognitoUserSession) => {
+      const handler = (err, cognitoUserSession) => {
         if (err) {
           return reject(err);
         }
@@ -116,20 +119,33 @@ export default class CognitoAuthScheme {
           }
 
           let user = {};
-          attributes.map(({ Name, Value }) => (user[Name] = Value));
+          attributes.map(({Name, Value}) => (user[Name] = Value));
           user.groups =
             cognitoUserSession.getIdToken().payload["cognito:groups"] || [];
 
           if (this.options.fetchUserCallback) {
             const custom = await fetchUserCallback(cognitoUser);
-            user = { ...user, ...custom };
+            user = {...user, ...custom};
           }
 
           return resolve(user);
         });
+      }
+
+      return cognitoUser.getSession((error, session) => {
+        if (error) {
+          return reject(error);
+        }
+
+        if (!forceRefresh) {
+          return handler(error, session);
+        }
+
+        return cognitoUser.refreshSession(session.getRefreshToken(), handler);
       });
     });
 
+    this._scheduleRefresh();
     this.$auth.setUser(user);
   }
 
