@@ -1,13 +1,13 @@
 {
   "name": "@sirdiego/nuxt-auth-cognito-scheme",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Use amazon-cognito-identity-js with the Nuxt.js Auth Module.",
   "main": "index.js",
   "author": "diego <npmjs@sirdiego.de>",
   "repository": "sirdiego/nuxt-auth-cognito-scheme",
   "license": "ISC",
   "dependencies": {
-    "amazon-cognito-identity-js": "^4.2.4",
+    "amazon-cognito-identity-js": "^4.3.0",
     "cross-fetch": "^3.0.4"
   }
 }
