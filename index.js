@@ -5,7 +5,7 @@ module.exports = function() {
   this.options.auth.strategies = this.options.auth.strategies || {};
   this.options.auth.strategies.cognito =
     this.options.auth.strategies.cognito || {};
-  this.options.auth.strategies.cognito._scheme =
+  this.options.auth.strategies.cognito.scheme =
     "@sirdiego/nuxt-auth-cognito-scheme/CognitoAuthScheme";
 };
 
